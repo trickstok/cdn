@@ -5,7 +5,7 @@ import checkAuthenticated from "./App/Helpers/middlewares/checkAuthenticated";
 
 const routes = (app: Application) => {
   app.use("/", indexRouter);
-  app.use("/image", imageRouter);
+  app.use("/image", checkAuthenticated, imageRouter);
 };
 
 export default routes;

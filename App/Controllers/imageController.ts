@@ -4,38 +4,35 @@ import HttpStatusCode from "../Enums/HttpStatusCodes";
 import checkAuthenticated from "../Helpers/middlewares/checkAuthenticated";
 import uploadImage from "../Helpers/middlewares/uploadImage";
 import { throwError } from "../Helpers/utilities/error";
-import { deleteImage } from "../Services/imageService";
+import { deleteImage, getAllImages } from "../Services/imageService";
 
 const router: Router = express.Router();
 
-router.get("/", checkAuthenticated, async (req, res) => {
+router.get("/get/all", async (req, res) => {
+  const images = getAllImages();
   res.json({
-    message: `Hello Image CDN`,
+    count: images?.length,
+    images: images,
   });
 });
 
-router.post(
-  "/upload",
-  checkAuthenticated,
-  uploadImage.single("image"),
-  async (req, res, next) => {
-    if (req.file) {
-      const folderName = config.get("storage.folderName");
-      const imageName = req.file?.filename;
-      const staticPath = `${folderName}/${imageName}`;
-      const fullUrl = req.protocol + "://" + req.get("host") + "/" + staticPath;
+router.post("/upload", uploadImage.single("image"), async (req, res, next) => {
+  if (req.file) {
+    const folderName = config.get("storage.folderName");
+    const imageName = req.file?.filename;
+    const staticPath = `${folderName}/${imageName}`;
+    const fullUrl = req.protocol + "://" + req.get("host") + "/" + staticPath;
 
-      return res.json({
-        filename: req.file?.filename,
-        path: staticPath,
-        url: fullUrl,
-      });
-    }
-    next(throwError("Image not selected", HttpStatusCode.NOT_FOUND));
+    return res.json({
+      filename: req.file?.filename,
+      path: staticPath,
+      url: fullUrl,
+    });
   }
-);
+  next(throwError("Image not selected", HttpStatusCode.NOT_FOUND));
+});
 
-router.post("/delete", checkAuthenticated, async (req, res, next) => {
+router.post("/delete", async (req, res, next) => {
   const imageName = req.body.image;
   try {
     const isDeleted = await deleteImage(imageName);

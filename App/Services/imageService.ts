@@ -57,4 +57,15 @@ async function deleteImage(imgName: string) {
   throw new Error(`Image "${imgName}" not found`);
 }
 
-export { uploadProcessedImage, deleteImage };
+function getAllImages(): string[] {
+  const filesFolder = `${path}/${folderName}/`;
+  let images: string[] = [];
+
+  fs.readdirSync(filesFolder).forEach((file) => {
+    images.push(file);
+  });
+
+  return images;
+}
+
+export { uploadProcessedImage, deleteImage, getAllImages };
