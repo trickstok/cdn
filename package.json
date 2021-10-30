@@ -1,0 +1,72 @@
+{
+  "name": "node-express-ts-rest-api",
+  "version": "1.0.0",
+  "description": "node-express-ts-rest-api",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm run build && node build/app.js",
+    "dev": "ts-node-dev --respawn --transpile-only app.ts",
+    "build": "rm -rf ./build && tsc -p .",
+    "generate-secret": "node -e \"console.log(require('crypto').randomBytes(256).toString('base64'));\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harduex/node-express-ts-rest-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harduex/node-express-ts-rest-api/issues"
+  },
+  "homepage": "https://github.com/Harduex/node-express-ts-rest-api#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.6",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "json-stringify-safe": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongoose": "^6.0.11",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.2",
+    "nanoid": "^3.1.30",
+    "pino": "^7.0.2",
+    "pino-pretty": "^7.1.0",
+    "sequelize": "^6.7.0",
+    "uuid": "^8.3.2",
+    "zod": "^3.9.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/body-parser": "^1.19.1",
+    "@types/config": "^0.0.39",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/es6-promise": "^3.3.0",
+    "@types/express": "^4.17.13",
+    "@types/express-validator": "^3.0.0",
+    "@types/json-stringify-safe": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.5",
+    "@types/lodash": "^4.14.175",
+    "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.3",
+    "@types/nanoid": "^3.0.0",
+    "@types/node": "^16.11.0",
+    "@types/pino": "^6.3.11",
+    "@types/sequelize": "^4.28.10",
+    "@types/uuid": "^8.3.1",
+    "ts-node": "^10.3.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.4"
+  }
+}
