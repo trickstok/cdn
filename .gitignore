@@ -109,3 +109,7 @@ config/local.ts
 # build folder
 
 build/
+
+# Images folder
+
+public/images/*

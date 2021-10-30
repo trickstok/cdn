@@ -9,18 +9,23 @@ const checkAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.info("Validating Api Key");
+  try {
+    logger.info("Validating Api Key");
 
-  const reqApiKey = req.headers.authorization as string;
-  const apiKey = config.get<string>("server.apiKey");
+    const reqApiKey = req.headers["api-key"] as string;
+    const apiKey = config.get<string>("server.apiKey");
 
-  if (reqApiKey && apiKey) {
-    if (reqApiKey === apiKey) return next();
+    if (reqApiKey && apiKey) {
+      if (reqApiKey === apiKey) return next();
+    }
+
+    return res.status(HttpStatusCode.UNAUTHORIZED).json({
+      message: "Unauthorized",
+    });
+  } catch (error: any) {
+    logger.info(error.message);
+    throw new Error(error);
   }
-
-  return res.status(HttpStatusCode.UNAUTHORIZED).json({
-    message: "Unauthorized",
-  });
 };
 
 export default checkAuthenticated;
