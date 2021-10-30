@@ -1,7 +1,6 @@
 import config from "config";
 import express, { Router } from "express";
 import HttpStatusCode from "../Enums/HttpStatusCodes";
-import checkAuthenticated from "../Helpers/middlewares/checkAuthenticated";
 import uploadImage from "../Helpers/middlewares/uploadImage";
 import { throwError } from "../Helpers/utilities/error";
 import { deleteImage, getAllImages } from "../Services/imageService";
@@ -21,7 +20,7 @@ router.post("/upload", uploadImage.single("image"), async (req, res, next) => {
     const folderName = config.get("storage.folderName");
     const imageName = req.file?.filename;
     const staticPath = `${folderName}/${imageName}`;
-    const fullUrl = req.protocol + "://" + req.get("host") + "/" + staticPath;
+    const fullUrl = `${req.protocol}://${config.get("server.host")}:${config.get("server.port")}/${staticPath}`;
 
     return res.json({
       filename: req.file?.filename,
