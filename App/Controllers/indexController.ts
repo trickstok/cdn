@@ -1,14 +1,12 @@
+import config from "config";
 import express, { Router } from "express";
-import db from "../Helpers/utilities/database";
-import checkAuthenticated from "../Helpers/middlewares/extractJWT";
+import checkAuthenticated from "../Helpers/middlewares/checkAuthenticated";
 
 const router: Router = express.Router();
 
 router.get("/", checkAuthenticated, async (req, res) => {
-  const user = res.locals.user;
-
   res.json({
-    message: `Hello ${user.username}`,
+    message: `Hello Api`,
   });
 });
 

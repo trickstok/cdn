@@ -16,13 +16,8 @@ import useRoutes from "./routes";
 // Custom logger
 import logger from "./App/Helpers/utilities/logger";
 
-// Databse utilities
-import db from "./App/Helpers/utilities/database";
-import seedDb from "./App/Helpers/utilities/seed";
-
 // Custom Middlewares
 import { error404, errorHandler } from "./App/Helpers/middlewares/errorHandler";
-import { any } from "webidl-conversions";
 
 // Port
 const port: number = config.get<number>("server.port");
@@ -52,15 +47,7 @@ useRoutes(app);
 app.use(error404);
 app.use(errorHandler);
 
-// Seed the DB
-seedDb();
-
-// DB connection and start server
-db.sequelize.sync().then(() => {
-  app.listen(port, async () => {
-    logger.info(`DB connected on ${config.get('db.host')}:${config.get('db.port')}`);
-    logger.info(`App listening on port ${port}`);
-  });
-}).catch((error: any) => {
-  logger.error(`Unable to connect to the database: ${error}`);
+// Start server
+app.listen(port, async () => {
+  logger.info(`App listening on port ${port}`);
 });

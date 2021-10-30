@@ -1,20 +1,8 @@
 export default {
   server: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 6060,
     host: process.env.HOST || "localhost",
-    corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
-    token: {
-      expireTime: process.env.TOKEN_EXPIRE_TIME || 900,
-      issuer: process.env.TOKEN_ISSUER || "coolIssuerr",
-      secret: process.env.TOKEN_SECRET || "superencryptedsecret",
-    },
-  },
-  db: {
-    database: process.env.DB_DATABASE_NAME || "node_rest_api",
-    username: process.env.DB_USERNAME || "root",
-    password: process.env.DB_PASSWORD || "",
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 3306,
-    dialect: process.env.DB_DIALECT || "mysql",
+    corsOrigin: process.env.CORS_ORIGIN || "http://localhost:6060",
+    apiKey: process.env.API_KEY || "qQ5rVNU5eIo/DgEU8N1SRqvtc5fE2saSu+5DhzAQwXsmAC+xcTfI/YMe2wFSulCFPHqCiiQhVpg424IcQyEy9p62GpiAQp54udCGsSTF3mGatcj/AB59tF1Bf7N3pftSHm0XWVwWY/P/wpkOeeVL5fsKbWhFBvUqCjysnkb+fCFB8kLDZ/5xxzeQ1OkgTK5efNt4hC7VjKuoDTnF5Lx52GdbGEaHdbz4nMAXIN9s1Uu2GRIEn3EId58Jo9VLq1ZmouuGvZch4CXHdXcFIauLC8p0CSDPMzBWptTx05sUg6wWQXqE7UF8J4oCKiDXHF+QcDsYQVYjgzcpIY7wwFne1Q==",
   },
 };

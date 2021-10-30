@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../utilities/logger";
-import jwt from "jsonwebtoken";
 import config from "config";
 import { throwError } from "../utilities/error";
 import HttpStatusCode from "../../Enums/HttpStatusCodes";
@@ -10,25 +9,15 @@ const checkAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.info("Validating token");
+  logger.info("Validating Api Key");
 
-  const token = req.headers.authorization;
+  const reqApiKey = req.headers.authorization as string;
+  const apiKey = config.get<string>("server.apiKey");
 
-  if (token) {
-    return jwt.verify(
-      token,
-      config.get("server.token.secret"),
-      (error, decoded) => {
-        if (decoded) {
-          res.locals.user = decoded;
-          return next();
-        }
-        return res.status(HttpStatusCode.NOT_FOUND).json({
-          error: error,
-        });
-      }
-    );
+  if (reqApiKey && apiKey) {
+    if (reqApiKey === apiKey) return next();
   }
+
   return res.status(HttpStatusCode.UNAUTHORIZED).json({
     message: "Unauthorized",
   });
