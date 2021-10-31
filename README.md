@@ -21,6 +21,12 @@ export default {
 
 ```
 
+## generate api key
+
+```
+npm run generate-secret
+```
+
 ## start
 
 ```
