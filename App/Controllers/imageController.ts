@@ -24,6 +24,7 @@ router.post("/upload", uploadImage.single("image"), async (req, res, next) => {
 
     return res.json({
       filename: req.file?.filename,
+      public_id: req.file?.filename,
       path: staticPath,
       url: fullUrl,
     });

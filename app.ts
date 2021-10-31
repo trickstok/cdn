@@ -35,8 +35,11 @@ app.use(
   })
 );
 
+// Static path
+const staticFolder = config.get<string>('storage.staticFolder');
+
 // Utilities
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, staticFolder)));
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(morgan("dev"));
