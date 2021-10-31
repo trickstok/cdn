@@ -11,6 +11,7 @@ export default {
     host: process.env.HOST || "localhost",
     corsOrigin: process.env.CORS_ORIGIN || "http://localhost:6060",
     apiKey: process.env.API_KEY || "your-custom-api-key",
+    https: process.env.HTTPS || true,
   },
   storage : {
       staticFolder: process.env.STATIC_FOLDER || 'public',
