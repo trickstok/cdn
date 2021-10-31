@@ -4,7 +4,7 @@ Self hosted Node.js CDN for uploading and processing images for your web applica
 
 ## example config
 
-```
+```javascript
 export default {
   server: {
     port: process.env.PORT || 6060,
@@ -31,13 +31,13 @@ npm run generate-secret
 ## start
 
 ```
-npm i
-npm run dev
+$ npm i
+$ npm run dev
 ```
 
 ## example usage in express app
 
-```
+```javascript
 import fs from "fs";
 import axios from "axios";
 import multer from "multer";
