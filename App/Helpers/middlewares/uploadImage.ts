@@ -1,6 +1,7 @@
 import config from "config";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -12,11 +13,10 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const timestamp = new Date().getTime();
-    const extArray = file.mimetype.split("/");
-    const extension = extArray[extArray.length - 1];
+    const extension = path.extname(file.originalname);
     const uniqueId = uuidv4();
 
-    cb(null, `${uniqueId}_${timestamp}.${extension}`);
+    cb(null, `${uniqueId}_${timestamp}${extension}`);
   },
 });
 

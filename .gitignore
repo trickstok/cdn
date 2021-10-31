@@ -107,9 +107,12 @@ dist
 config/local.ts
 
 # build folder
-
 build/
 
 # Images folder
-
 public/images/*
+
+# https
+key.pem
+keytmp.pem
+cert.pem

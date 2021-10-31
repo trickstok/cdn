@@ -4,11 +4,15 @@ import express, { Application } from "express";
 import path from "path";
 import cors from "cors";
 import morgan from "morgan";
+import fs from "fs";
 
 // Configurations
 import dotenv from "dotenv";
 dotenv.config();
 import config from "config";
+
+// https
+import https from "https";
 
 // Routes
 import useRoutes from "./routes";
@@ -36,7 +40,7 @@ app.use(
 );
 
 // Static path
-const staticFolder = config.get<string>('storage.staticFolder');
+const staticFolder = config.get<string>("storage.staticFolder");
 
 // Utilities
 app.use(express.static(path.join(__dirname, staticFolder)));
@@ -51,7 +55,22 @@ useRoutes(app);
 app.use(error404);
 app.use(errorHandler);
 
-// Start server
-app.listen(port, async () => {
-  logger.info(`App listening on port ${port}`);
-});
+if (config.get<boolean>("server.https")) {
+  // Https Server
+  https
+    .createServer(
+      {
+        key: fs.readFileSync("./key.pem"),
+        cert: fs.readFileSync("./cert.pem"),
+      },
+      app
+    )
+    .listen(port, function () {
+      logger.info(`HTTPS Server listening on port ${port}`);
+    });
+} else {
+  // Http server
+  app.listen(port, async () => {
+    logger.info(`HTTP Server listening on port ${port}`);
+  });
+}

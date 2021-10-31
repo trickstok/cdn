@@ -3,6 +3,7 @@ import express, { Router } from "express";
 import HttpStatusCode from "../Enums/HttpStatusCodes";
 import uploadImage from "../Helpers/middlewares/uploadImage";
 import { throwError } from "../Helpers/utilities/error";
+import logger from "../Helpers/utilities/logger";
 import { deleteImage, getAllImages } from "../Services/imageService";
 
 const router: Router = express.Router();
