@@ -28,7 +28,8 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
     const fileName = originalFileName.replace(/\.[^/.]+$/, "");
     const publicId = originalFileName;
     const extension = path.extname(originalFileName);
-    const staticPath = `${folderName}/${originalFileName}`;
+    const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
+    const staticPath = `${folderName}${albumFolder}/${originalFileName}`;
     const fullUrl = `${req.protocol}://${config.get(
       "server.host"
     )}:${config.get("server.port")}/${staticPath}`;
@@ -52,9 +53,10 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
 
 router.post("/delete", async (req, res, next) => {
   const publicId = req.body.public_id;
+  const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
 
   try {
-    const isDeleted = await deleteMedia(publicId);
+    const isDeleted = await deleteMedia(publicId, albumFolder);
     res.json({
       message: isDeleted && `Media "${publicId}" successfully deleted`,
     });

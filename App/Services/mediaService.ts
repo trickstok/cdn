@@ -50,8 +50,8 @@ async function uploadProcessedMedia(
   };
 }
 
-async function deleteMedia(public_id: string) {
-  const filePath = `${storagePath}/${folderName}/${public_id}`;
+async function deleteMedia(public_id: string, nestedFolder: string) {
+  const filePath = `${storagePath}/${folderName}${nestedFolder}/${public_id}`;
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     return true;
