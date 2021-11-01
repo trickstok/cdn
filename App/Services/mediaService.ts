@@ -1,10 +1,12 @@
 import sharp from "sharp";
 import fs from "fs";
+import path from "path";
+import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ProcessMediaOptions } from "../Interfaces/ProcessMedia";
 import config from "config";
 
-const path = config.get("storage.path");
+const storagePath = config.get("storage.path");
 const folderName = config.get("storage.folderName");
 
 function processMedia(
@@ -33,7 +35,7 @@ async function uploadProcessedMedia(
 ) {
   const publicId = name || uuidv4();
 
-  const uploadPath = `${path}/${folderName}/${publicId}`;
+  const uploadPath = `${storagePath}/${folderName}/${publicId}`;
   const url = `${folderName}/${publicId}`;
 
   await processMedia(tempPath, uploadPath, options);
@@ -48,17 +50,17 @@ async function uploadProcessedMedia(
   };
 }
 
-async function deleteMedia(fileName: string) {
-  const filePath = `${path}/${folderName}/${fileName}`;
+async function deleteMedia(public_id: string) {
+  const filePath = `${storagePath}/${folderName}/${public_id}`;
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     return true;
   }
-  throw new Error(`Media "${fileName}" not found`);
+  throw new Error(`Media with public id ${public_id} not found`);
 }
 
 function getAllMedia(): string[] {
-  const filesFolder = `${path}/${folderName}/`;
+  const filesFolder = `${storagePath}/${folderName}/`;
   let allMedia: string[] = [];
 
   fs.readdirSync(filesFolder).forEach((file) => {
@@ -68,4 +70,47 @@ function getAllMedia(): string[] {
   return allMedia;
 }
 
-export { uploadProcessedMedia, deleteMedia, getAllMedia };
+async function downloadMedia(url: string) {
+  const timestamp = new Date().getTime();
+  const extension = path.extname(url);
+  const uniqueId = uuidv4();
+  const originalFileName = `${uniqueId}_${timestamp}${extension}`;
+  const fileName = originalFileName.replace(/\.[^/.]+$/, "");
+  const savePath = path.resolve(
+    __dirname,
+    `../../${storagePath}/${folderName}`,
+    originalFileName
+  );
+  const staticPath = `${folderName}/${originalFileName}`;
+  const publicId = originalFileName;
+  const fullUrl = `${
+    config.get("server.https") ? "https" : "http"
+  }://${config.get("server.host")}:${config.get("server.port")}/${staticPath}`;
+
+  const writer = fs.createWriteStream(savePath);
+
+  const response = await axios({
+    url: url,
+    method: "GET",
+    responseType: "stream",
+  });
+
+  response.data.pipe(writer);
+
+  const promise = new Promise((resolve, reject) => {
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
+
+  return {
+    filename: fileName,
+    original_filename: originalFileName,
+    extension: extension,
+    public_id: publicId,
+    path: staticPath,
+    url: fullUrl,
+    original_url: url,
+  };
+}
+
+export { uploadProcessedMedia, deleteMedia, getAllMedia, downloadMedia };

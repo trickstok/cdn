@@ -5,7 +5,11 @@ import HttpStatusCode from "../Enums/HttpStatusCodes";
 import uploadFile from "../Helpers/middlewares/uploadFile";
 import { throwError } from "../Helpers/utilities/error";
 import logger from "../Helpers/utilities/logger";
-import { deleteMedia, getAllMedia } from "../Services/mediaService";
+import {
+  deleteMedia,
+  downloadMedia,
+  getAllMedia,
+} from "../Services/mediaService";
 
 const router: Router = express.Router();
 
@@ -38,11 +42,17 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
       url: fullUrl,
     });
   }
+  if (req.body.url) {
+    const url = req.body.url;
+    const response = await downloadMedia(url);
+    return res.json(response);
+  }
   next(throwError("Media not selected", HttpStatusCode.NOT_FOUND));
 });
 
 router.post("/delete", async (req, res, next) => {
   const publicId = req.body.public_id;
+
   try {
     const isDeleted = await deleteMedia(publicId);
     res.json({

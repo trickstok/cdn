@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/Harduex/node-express-ts-rest-api#readme",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/multer": "^1.4.7",
     "@types/sharp": "^0.29.2",
+    "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
