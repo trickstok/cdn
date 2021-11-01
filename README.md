@@ -8,18 +8,17 @@ Self hosted Node.js CDN for uploading and processing images for your web applica
 export default {
   server: {
     port: process.env.PORT || 6060,
-    host: process.env.HOST || "localhost",
-    corsOrigin: process.env.CORS_ORIGIN || "http://localhost:6060",
+    host: process.env.HOST || "simdrive.asuscomm.com",
+    corsOrigin: process.env.CORS_ORIGIN || "*",
     apiKey: process.env.API_KEY || "your-custom-api-key",
+    staticFolder: process.env.STATIC_FOLDER || 'public',
     https: process.env.HTTPS || true,
   },
   storage : {
-      staticFolder: process.env.STATIC_FOLDER || 'public',
       path: process.env.STORAGE_PATH || 'public',
-      folderName: process.env.FOLDER_NAME || 'images',
-  }
+      folderName: process.env.FOLDER_NAME || 'media',
+  },
 };
-
 ```
 
 ## generate api key
