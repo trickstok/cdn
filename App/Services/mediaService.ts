@@ -70,7 +70,7 @@ function getAllMedia(): string[] {
   return allMedia;
 }
 
-async function downloadMedia(url: string) {
+async function downloadMedia(url: string, nestedFolder: string) {
   const timestamp = new Date().getTime();
   const extension = path.extname(url);
   const uniqueId = uuidv4();
@@ -78,14 +78,20 @@ async function downloadMedia(url: string) {
   const fileName = originalFileName.replace(/\.[^/.]+$/, "");
   const savePath = path.resolve(
     __dirname,
-    `../../${storagePath}/${folderName}`,
+    `../../${storagePath}/${folderName}${nestedFolder}`,
     originalFileName
   );
-  const staticPath = `${folderName}/${originalFileName}`;
+  const staticPath = `${folderName}${nestedFolder}/${originalFileName}`;
   const publicId = originalFileName;
   const fullUrl = `${
     config.get("server.https") ? "https" : "http"
   }://${config.get("server.host")}:${config.get("server.port")}/${staticPath}`;
+
+  if(nestedFolder) {
+    if (!fs.existsSync(`${storagePath}/${folderName}${nestedFolder}`)) {
+      fs.mkdirSync(`${storagePath}/${folderName}${nestedFolder}`);
+    }
+  }
 
   const writer = fs.createWriteStream(savePath);
 

@@ -22,13 +22,13 @@ router.get("/get/all", async (req, res) => {
 });
 
 router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
+  const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
   if (req.file) {
     const folderName = config.get("storage.folderName");
     const originalFileName = req.file?.filename;
     const fileName = originalFileName.replace(/\.[^/.]+$/, "");
     const publicId = originalFileName;
     const extension = path.extname(originalFileName);
-    const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
     const staticPath = `${folderName}${albumFolder}/${originalFileName}`;
     const fullUrl = `${req.protocol}://${config.get(
       "server.host"
@@ -45,7 +45,7 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
   }
   if (req.body.url) {
     const url = req.body.url;
-    const response = await downloadMedia(url);
+    const response = await downloadMedia(url, albumFolder);
     return res.json(response);
   }
   next(throwError("Media not selected", HttpStatusCode.NOT_FOUND));
