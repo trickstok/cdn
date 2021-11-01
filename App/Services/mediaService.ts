@@ -1,16 +1,16 @@
 import sharp from "sharp";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
-import { ProcessImageOptions } from "../Interfaces/ProcessImage";
+import { ProcessMediaOptions } from "../Interfaces/ProcessMedia";
 import config from "config";
 
 const path = config.get("storage.path");
 const folderName = config.get("storage.folderName");
 
-function processImage(
+function processMedia(
   imgPath: string,
   newPath: string,
-  options?: ProcessImageOptions
+  options?: ProcessMediaOptions
 ) {
   if (options) {
     return sharp(imgPath)
@@ -26,17 +26,17 @@ function processImage(
   return sharp(imgPath).toFile(newPath);
 }
 
-async function uploadProcessedImage(
+async function uploadProcessedMedia(
   tempPath: string,
-  options?: ProcessImageOptions,
+  options?: ProcessMediaOptions,
   name?: string
 ) {
-  const imgName = name || uuidv4();
+  const publicId = name || uuidv4();
 
-  const uploadPath = `${path}/${folderName}/${imgName}`;
-  const url = `${folderName}/${imgName}`;
+  const uploadPath = `${path}/${folderName}/${publicId}`;
+  const url = `${folderName}/${publicId}`;
 
-  await processImage(tempPath, uploadPath, options);
+  await processMedia(tempPath, uploadPath, options);
 
   if (fs.existsSync(tempPath)) {
     fs.unlinkSync(tempPath);
@@ -44,28 +44,28 @@ async function uploadProcessedImage(
 
   return {
     url: url,
-    imageName: imgName,
+    public_id: publicId,
   };
 }
 
-async function deleteImage(imgName: string) {
-  const filePath = `${path}/${folderName}/${imgName}`;
+async function deleteMedia(fileName: string) {
+  const filePath = `${path}/${folderName}/${fileName}`;
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     return true;
   }
-  throw new Error(`Image "${imgName}" not found`);
+  throw new Error(`Media "${fileName}" not found`);
 }
 
-function getAllImages(): string[] {
+function getAllMedia(): string[] {
   const filesFolder = `${path}/${folderName}/`;
-  let images: string[] = [];
+  let allMedia: string[] = [];
 
   fs.readdirSync(filesFolder).forEach((file) => {
-    images.push(file);
+    allMedia.push(file);
   });
 
-  return images;
+  return allMedia;
 }
 
-export { uploadProcessedImage, deleteImage, getAllImages };
+export { uploadProcessedMedia, deleteMedia, getAllMedia };

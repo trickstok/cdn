@@ -40,7 +40,7 @@ app.use(
 );
 
 // Static path
-const staticFolder = config.get<string>("storage.staticFolder");
+const staticFolder = config.get<string>("server.staticFolder");
 
 // Utilities
 app.use(express.static(path.join(__dirname, staticFolder)));

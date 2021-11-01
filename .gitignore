@@ -109,8 +109,8 @@ config/local.ts
 # build folder
 build/
 
-# Images folder
-public/images/*
+# Media folder
+public/media/*
 
 # https
 key.pem
