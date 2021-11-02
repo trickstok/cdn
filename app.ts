@@ -44,7 +44,7 @@ const staticFolder = config.get<string>("server.staticFolder");
 
 // Utilities
 app.use(express.static(path.join(__dirname, staticFolder)));
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));
 
