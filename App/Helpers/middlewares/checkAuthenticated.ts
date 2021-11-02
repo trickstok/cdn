@@ -10,8 +10,6 @@ const checkAuthenticated = (
   next: NextFunction
 ) => {
   try {
-    logger.info("Validating Api Key");
-
     const reqApiKey = req.headers["api-key"] as string;
     const apiKey = config.get<string>("server.apiKey");
 

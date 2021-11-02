@@ -53,17 +53,25 @@ async function uploadProcessedMedia(
 }
 
 async function deleteMedia(public_id: string, nestedFolder: string) {
-  const filePath = path.join(mediaPath, nestedFolder, public_id);
+  const albumPath = path.join(mediaPath, nestedFolder);
+  const filePath = path.join(albumPath, public_id);
 
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-
-    cleanEmptyFoldersRecursively(mediaPath);
-
-    return true;
+  if (public_id) {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      cleanEmptyFoldersRecursively(mediaPath);
+      return true;
+    }
+    throw new Error(`Media with public id ${public_id} not found`);
+  } else if (nestedFolder) {
+    try {
+      fs.rmSync(albumPath, { recursive: true });
+      return true;
+    } catch (error) {
+      throw new Error(`Album ${nestedFolder} not found`);
+    }
   }
-
-  throw new Error(`Media with public id ${public_id} not found`);
+  return false;
 }
 
 function getAllMedia(): string[] {

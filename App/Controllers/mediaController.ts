@@ -62,13 +62,19 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
 });
 
 router.post("/delete", async (req, res, next) => {
-  const publicId = req.body.public_id;
-  const albumFolder = req.body.folder ? req.body.folder : "";
+  const publicId = req.body.public_id || "";
+  const albumFolder = req.body.folder || "";
 
   try {
     const isDeleted = await deleteMedia(publicId, albumFolder);
+    let message = "Problem deleting";
+    if (isDeleted) {
+      message = publicId
+        ? `Media with public id ${publicId} successfully deleted`
+        : `Album ${albumFolder} successfully deleted`;
+    }
     res.json({
-      message: isDeleted && `Media "${publicId}" successfully deleted`,
+      message: message,
     });
   } catch (error: any) {
     next(throwError(error.message, HttpStatusCode.NOT_FOUND));
