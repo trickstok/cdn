@@ -5,9 +5,10 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ProcessMediaOptions } from "../Interfaces/ProcessMedia";
 import config from "config";
+import { cleanEmptyFoldersRecursively } from "../Helpers/utilities/files";
 
-const storagePath = config.get("storage.path");
-const folderName = config.get("storage.folderName");
+const storagePath = config.get<string>("storage.path");
+const folderName = config.get<string>("storage.folderName");
 
 function processMedia(
   imgPath: string,
@@ -51,11 +52,20 @@ async function uploadProcessedMedia(
 }
 
 async function deleteMedia(public_id: string, nestedFolder: string) {
-  const filePath = `${storagePath}/${folderName}${nestedFolder}/${public_id}`;
+  const filePath = path.join(
+    `${storagePath}/${folderName}`,
+    nestedFolder,
+    public_id
+  );
+
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
+
+    cleanEmptyFoldersRecursively(`${storagePath}/${folderName}`);
+
     return true;
   }
+
   throw new Error(`Media with public id ${public_id} not found`);
 }
 
@@ -76,20 +86,18 @@ async function downloadMedia(url: string, nestedFolder: string) {
   const uniqueId = uuidv4();
   const originalFileName = `${uniqueId}_${timestamp}${extension}`;
   const fileName = originalFileName.replace(/\.[^/.]+$/, "");
-  const savePath = path.resolve(
-    __dirname,
-    `../../${storagePath}/${folderName}${nestedFolder}`,
-    originalFileName
-  );
-  const staticPath = `${folderName}${nestedFolder}/${originalFileName}`;
+  const staticAlbumPath = path.join(folderName, nestedFolder);
+  const albumPath = path.join(`${storagePath}/${folderName}`, nestedFolder);
+  const savePath = path.join(albumPath, originalFileName);
+  const staticPath = path.join(folderName, nestedFolder, originalFileName);
   const publicId = originalFileName;
   const fullUrl = `${
     config.get("server.https") ? "https" : "http"
   }://${config.get("server.host")}:${config.get("server.port")}/${staticPath}`;
 
-  if(nestedFolder) {
-    if (!fs.existsSync(`${storagePath}/${folderName}${nestedFolder}`)) {
-      fs.mkdirSync(`${storagePath}/${folderName}${nestedFolder}`);
+  if (nestedFolder) {
+    if (!fs.existsSync(albumPath)) {
+      fs.mkdirSync(albumPath);
     }
   }
 
@@ -113,7 +121,10 @@ async function downloadMedia(url: string, nestedFolder: string) {
     original_filename: originalFileName,
     extension: extension,
     public_id: publicId,
-    path: staticPath,
+    static_path: staticPath,
+    full_path: savePath,
+    album_path: albumPath,
+    static_album_path: staticAlbumPath,
     url: fullUrl,
     original_url: url,
   };

@@ -22,14 +22,20 @@ router.get("/get/all", async (req, res) => {
 });
 
 router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
-  const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
+  const albumFolder = req.body.folder ? req.body.folder : "";
   if (req.file) {
-    const folderName = config.get("storage.folderName");
+    const folderName = config.get<string>("storage.folderName");
     const originalFileName = req.file?.filename;
     const fileName = originalFileName.replace(/\.[^/.]+$/, "");
     const publicId = originalFileName;
     const extension = path.extname(originalFileName);
-    const staticPath = `${folderName}${albumFolder}/${originalFileName}`;
+    const staticPath = path.join(folderName, albumFolder, originalFileName);
+    const storagePath = config.get<string>("storage.path");
+    const nestedFolder = req.body.folder ? req.body.folder : "";
+    const albumPath = path.join(`${storagePath}/${folderName}`, nestedFolder);
+    const staticAlbumPath = path.join(folderName, nestedFolder);
+    const savePath = path.join(albumPath, originalFileName);
+
     const fullUrl = `${req.protocol}://${config.get(
       "server.host"
     )}:${config.get("server.port")}/${staticPath}`;
@@ -39,7 +45,10 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
       original_filename: originalFileName,
       extension: extension,
       public_id: publicId,
-      path: staticPath,
+      static_path: staticPath,
+      full_path: savePath,
+      album_path: albumPath,
+      static_album_path: staticAlbumPath,
       url: fullUrl,
     });
   }
@@ -53,7 +62,7 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
 
 router.post("/delete", async (req, res, next) => {
   const publicId = req.body.public_id;
-  const albumFolder = req.body.folder ? `/${req.body.folder}` : "";
+  const albumFolder = req.body.folder ? req.body.folder : "";
 
   try {
     const isDeleted = await deleteMedia(publicId, albumFolder);
