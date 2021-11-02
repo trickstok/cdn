@@ -9,6 +9,7 @@ import { cleanEmptyFoldersRecursively } from "../Helpers/utilities/files";
 
 const storagePath = config.get<string>("storage.path");
 const folderName = config.get<string>("storage.folderName");
+const mediaPath = path.join(storagePath, folderName);
 
 function processMedia(
   imgPath: string,
@@ -36,7 +37,7 @@ async function uploadProcessedMedia(
 ) {
   const publicId = name || uuidv4();
 
-  const uploadPath = `${storagePath}/${folderName}/${publicId}`;
+  const uploadPath = `${mediaPath}/${publicId}`;
   const url = `${folderName}/${publicId}`;
 
   await processMedia(tempPath, uploadPath, options);
@@ -52,16 +53,12 @@ async function uploadProcessedMedia(
 }
 
 async function deleteMedia(public_id: string, nestedFolder: string) {
-  const filePath = path.join(
-    `${storagePath}/${folderName}`,
-    nestedFolder,
-    public_id
-  );
+  const filePath = path.join(mediaPath, nestedFolder, public_id);
 
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
 
-    cleanEmptyFoldersRecursively(`${storagePath}/${folderName}`);
+    cleanEmptyFoldersRecursively(mediaPath);
 
     return true;
   }
@@ -70,7 +67,7 @@ async function deleteMedia(public_id: string, nestedFolder: string) {
 }
 
 function getAllMedia(): string[] {
-  const filesFolder = `${storagePath}/${folderName}/`;
+  const filesFolder = mediaPath;
   let allMedia: string[] = [];
 
   fs.readdirSync(filesFolder).forEach((file) => {
@@ -87,7 +84,7 @@ async function downloadMedia(url: string, nestedFolder: string) {
   const originalFileName = `${uniqueId}_${timestamp}${extension}`;
   const fileName = originalFileName.replace(/\.[^/.]+$/, "");
   const staticAlbumPath = path.join(folderName, nestedFolder);
-  const albumPath = path.join(`${storagePath}/${folderName}`, nestedFolder);
+  const albumPath = path.join(mediaPath, nestedFolder);
   const savePath = path.join(albumPath, originalFileName);
   const staticPath = path.join(folderName, nestedFolder, originalFileName);
   const publicId = originalFileName;

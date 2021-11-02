@@ -32,7 +32,8 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
     const staticPath = path.join(folderName, albumFolder, originalFileName);
     const storagePath = config.get<string>("storage.path");
     const nestedFolder = req.body.folder ? req.body.folder : "";
-    const albumPath = path.join(`${storagePath}/${folderName}`, nestedFolder);
+    const mediaPath = path.join(storagePath, folderName);
+    const albumPath = path.join(mediaPath, nestedFolder);
     const staticAlbumPath = path.join(folderName, nestedFolder);
     const savePath = path.join(albumPath, originalFileName);
 
