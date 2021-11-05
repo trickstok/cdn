@@ -36,12 +36,11 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
     const albumPath = path.join(mediaPath, nestedFolder);
     const staticAlbumPath = path.join(folderName, nestedFolder);
     const savePath = path.join(albumPath, originalFileName);
-
     const fullUrl = `${req.protocol}://${config.get(
       "server.host"
     )}:${config.get("server.port")}/${staticPath}`;
 
-    return res.json({
+    return res.status(HttpStatusCode.CREATED).json({
       filename: fileName,
       original_filename: originalFileName,
       extension: extension,
@@ -56,7 +55,7 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
   if (req.body.url) {
     const url = req.body.url;
     const response = await downloadMedia(url, albumFolder);
-    return res.json(response);
+    return res.status(HttpStatusCode.CREATED).json(response);
   }
   next(throwError("Media not selected", HttpStatusCode.NOT_FOUND));
 });
@@ -73,7 +72,7 @@ router.post("/delete", async (req, res, next) => {
         ? `Media with public id ${publicId} successfully deleted`
         : `Album ${albumFolder} successfully deleted`;
     }
-    res.json({
+    res.status(HttpStatusCode.OK).json({
       message: message,
     });
   } catch (error: any) {
