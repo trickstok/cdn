@@ -1,22 +1,23 @@
-# images-cdn-service
+# Trickstok CDN
+Used to store and manage Trickstok static files
 
 Self hosted Node.js CDN for uploading and processing images for your web applications.
 
-## example config
+## Config
 
 ```javascript
 export default {
   server: {
-    port: process.env.PORT || 6060,
-    host: process.env.HOST || "simdrive.asuscomm.com",
-    corsOrigin: process.env.CORS_ORIGIN || "*",
-    apiKey: process.env.API_KEY || "your-custom-api-key",
-    staticFolder: process.env.STATIC_FOLDER || 'public',
-    https: process.env.HTTPS || true,
+    port: 80,
+    host: "cdn.trickstok.tk",
+    corsOrigin: "*",
+    apiKey: "your-custom-api-key",
+    staticFolder: 'public',
+    https: false,
   },
   storage : {
-      path: process.env.STORAGE_PATH || 'public',
-      folderName: process.env.FOLDER_NAME || 'media',
+      path: 'public',
+      folderName: 'media',
   },
 };
 ```
@@ -160,11 +161,4 @@ router.post("/post/delete/:id", async (req, res) => {
     resultDelete: resultDelete,
   });
 });
-```
-
-## docker example
-
-```
-sudo docker build -t images-cdn .
-sudo docker run -d -e HOST="your-host.com" -e STATIC_FOLDER="../public" --name images-cdn -v ~/Desktop/images:/app/public/images -p 6060:6060 images-cdn
 ```
