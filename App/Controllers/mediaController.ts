@@ -1,6 +1,7 @@
 import config from "config";
 import express, { Router } from "express";
 import path from "path";
+import fs from "fs";
 import HttpStatusCode from "../Enums/HttpStatusCodes";
 import uploadFile from "../Helpers/middlewares/uploadFile";
 import { throwError } from "../Helpers/utilities/error";
@@ -20,7 +21,7 @@ router.get("/:media", async (req, res) => {
     // res.setHeader("content-type", "")
     fs.createReadStream(localPath).pipe(res); 
   } else {
-    next(throwError(error.message, HttpStatusCode.NOT_FOUND));
+    next(throwError(`Cannot find file ${media}`, HttpStatusCode.NOT_FOUND));
   }
 })
 
