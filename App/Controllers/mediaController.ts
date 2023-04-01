@@ -36,9 +36,9 @@ router.post("/upload", uploadFile.single("media"), async (req, res, next) => {
     const albumPath = path.join(mediaPath, nestedFolder);
     const staticAlbumPath = path.join(folderName, nestedFolder);
     const savePath = path.join(albumPath, originalFileName);
-    const fullUrl = `${req.protocol}://${config.get(
+    const fullUrl = `https://${config.get(
       "server.host"
-    )}:${config.get("server.port")}/${staticPath}`;
+    )}/${staticPath}`;
 
     return res.status(HttpStatusCode.CREATED).json({
       filename: fileName,
