@@ -16,6 +16,10 @@ const checkAuthenticated = (
     if (reqApiKey && apiKey) {
       if (reqApiKey === apiKey) return next();
     }
+    
+    if (!req.url.match('(?:\/media\/upload$)').length > 0 && !req.url.match('(?:\/media\/delete$)').length > 0 && !req.url.match('(?:\/media\/get\/all$)').length > 0) {
+      return next();
+    }
 
     return res.status(HttpStatusCode.UNAUTHORIZED).json({
       message: "Unauthorized",
