@@ -13,6 +13,10 @@ import {
 
 const router: Router = express.Router();
 
+router.get("/:media", async (req, res) => {
+  const media = req.params['media']
+})
+
 router.get("/get/all", async (req, res) => {
   const media = getAllMedia();
   res.json({
