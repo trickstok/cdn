@@ -14,7 +14,7 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/:media", async (req, res) => {
+router.get("/:media", async (req, res, next) => {
   const media = req.params['media']
   const localPath = `public/media/${media}`
   if (fs.existsSync(localPath)) {
