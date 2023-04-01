@@ -43,7 +43,10 @@ app.use(
 const staticFolder = config.get<string>("server.staticFolder");
 
 // Utilities
-app.use(express.static(path.join(__dirname, staticFolder)));
+
+// Depreciate: useless because function was rewritten
+// app.use(express.static(path.join(__dirname, staticFolder)));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));

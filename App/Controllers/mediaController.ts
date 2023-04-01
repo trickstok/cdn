@@ -1,6 +1,7 @@
 import config from "config";
 import express, { Router } from "express";
 import path from "path";
+import fs from "fs";
 import HttpStatusCode from "../Enums/HttpStatusCodes";
 import uploadFile from "../Helpers/middlewares/uploadFile";
 import { throwError } from "../Helpers/utilities/error";
@@ -12,6 +13,17 @@ import {
 } from "../Services/mediaService";
 
 const router: Router = express.Router();
+
+router.get("/:media", async (req, res, next) => {
+  const media = req.params['media']
+  const localPath = `public/media/${media}`
+  if (fs.existsSync(localPath)) {
+    // res.setHeader("content-type", "")
+    fs.createReadStream(localPath).pipe(res); 
+  } else {
+    next(throwError(`Cannot find file ${media}`, HttpStatusCode.NOT_FOUND));
+  }
+})
 
 router.get("/get/all", async (req, res) => {
   const media = getAllMedia();
