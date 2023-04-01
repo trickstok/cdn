@@ -15,6 +15,13 @@ const router: Router = express.Router();
 
 router.get("/:media", async (req, res) => {
   const media = req.params['media']
+  const localPath = `public/media/${media}`
+  if (fs.existsSync(localPath)) {
+    // res.setHeader("content-type", "")
+    fs.createReadStream(localPath).pipe(res); 
+  } else {
+    next(throwError(error.message, HttpStatusCode.NOT_FOUND));
+  }
 })
 
 router.get("/get/all", async (req, res) => {
