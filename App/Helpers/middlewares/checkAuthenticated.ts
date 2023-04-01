@@ -17,7 +17,7 @@ const checkAuthenticated = (
       if (reqApiKey === apiKey) return next();
     }
     
-    if (!req.url.match('(?:\/media\/upload$)').length > 0 && !req.url.match('(?:\/media\/delete$)').length > 0 && !req.url.match('(?:\/media\/get\/all$)').length > 0) {
+    if (!req.url.match('(?:\/media\/upload$)') && !req.url.match('(?:\/media\/delete$)') && !req.url.match('(?:\/media\/get\/all$)')) {
       return next();
     }
 
